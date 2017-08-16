@@ -1,0 +1,27 @@
+{
+	"name": "react-budget-app",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index.js",
+		"server": "nodemon index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/sarahemilym/react-budget-app.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/sarahemilym/react-budget-app/issues"
+	},
+	"homepage": "https://github.com/sarahemilym/react-budget-app#readme",
+	"dependencies": {
+		"express": "^4.15.4",
+		"nodemon": "^1.11.0"
+	},
+	"devDependencies": {
+		"prettier": "^1.5.3"
+	}
+}
