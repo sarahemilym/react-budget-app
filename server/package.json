@@ -19,6 +19,7 @@
 	"homepage": "https://github.com/sarahemilym/react-budget-app#readme",
 	"dependencies": {
 		"express": "^4.15.4",
+		"mongoose": "^4.11.7",
 		"nodemon": "^1.11.0"
 	},
 	"devDependencies": {
