@@ -24,7 +24,7 @@ passport.use(
 			callbackURL: '/auth/google/callback',
 			proxy: true
 		},
-		async (accessToken, refreshTokeb, profile, done) => {
+		async (accessToken, refreshToken, profile, done) => {
 			const existingUser = await User.findOne({ googleId: profile.id });
 			if (existingUser) {
 				return done(null, existingUser);
@@ -50,7 +50,6 @@ passport.use(
 		async (accessToken, refreshToken, profile, cb) => {
 			const existingUser = await User.findOne({ facebookId: profile.id });
 			if (existingUser) {
-				console.log('THERE IS ALREADY A USER', existingUser);
 				return cb(null, existingUser);
 			}
 
