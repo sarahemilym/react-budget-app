@@ -10,26 +10,25 @@ module.exports = app => {
 
 	app.get(
 		'/auth/google/callback',
-		passport.authenticate('google'),
-		(req, res) => {
-			console.log('google req', req);
-			res.send(req.user);
-		}
+		passport.authenticate('google', {
+			successRedirect: '/dashboard',
+			failureRedirect: '/login'
+		})
 	);
 
 	app.get('/auth/facebook', passport.authenticate('facebook'));
 
 	app.get(
 		'/auth/facebook/callback',
-		passport.authenticate('facebook'),
-		(req, res) => {
-			res.send(req.user);
-		}
+		passport.authenticate('facebook', {
+			successRedirect: '/dashboard',
+			failureRedirect: '/login'
+		})
 	);
 
 	app.get('/api/logout', (req, res) => {
 		req.logout();
-		res.send(req.user);
+		res.redirect('/');
 	});
 
 	app.get('/api/current_user', (req, res) => {

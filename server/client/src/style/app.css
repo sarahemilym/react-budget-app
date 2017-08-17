@@ -1,0 +1,23 @@
+.login-form {
+	width: 50%;
+	padding: 41px;
+	border-right: 1px solid grey;
+}
+
+.login-wrapper {
+	display: flex;
+}
+
+.social-logins {
+	display: flex;
+	flex-direction: column;
+	align-self: center;
+	align-items: center;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.google,
+.facebook {
+	margin: 10px 0px;
+}
