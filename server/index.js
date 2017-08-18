@@ -2,13 +2,17 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
 const keys = require('./config/keys');
+const app = express();
 require('./models/User');
 require('./services/passport');
 
 mongoose.connect(keys.mongoURI);
 
-const app = express();
+app.use(morgan('combined'));
+app.use(bodyParser.json({ type: '*/*' }));
 
 // May change and use JWT
 app.use(

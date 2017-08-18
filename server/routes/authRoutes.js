@@ -1,4 +1,5 @@
 const passport = require('passport');
+const Authentication = require('../controllers/authentication');
 
 module.exports = app => {
 	app.get(
@@ -25,6 +26,15 @@ module.exports = app => {
 			failureRedirect: '/login'
 		})
 	);
+
+	app.post(
+		'/login',
+		passport.authenticate('local', (req, res) => {
+			console.log('RESPONSE', res);
+		})
+	);
+
+	app.post('/signup', Authentication.signup);
 
 	app.get('/api/logout', (req, res) => {
 		req.logout();

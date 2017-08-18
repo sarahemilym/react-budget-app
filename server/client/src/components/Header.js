@@ -15,15 +15,20 @@ class Header extends Component {
 				);
 			default:
 				return (
-					<li>
-						<a href="/api/logout">Logout</a>
-					</li>
+					<div>
+						<li>
+							{this.props.auth.name}
+						</li>
+						<li>
+							<a href="/api/logout">Logout</a>
+						</li>
+					</div>
 				);
 		}
 	}
 	render() {
 		return (
-			<nav>
+			<nav className="cyan lighten-3">
 				<div className="nav-wrapper">
 					<a href="/" className="brand-logo left">
 						Logo

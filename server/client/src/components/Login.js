@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import LoginForm from './LoginForm';
 
 class Login extends Component {
 	componentWillUpdate(nextProps) {
-		console.log('props', this.props.auth);
 		if (nextProps.auth) {
 			this.props.history.push('/dashboard');
 		}
 	}
+
 	renderContent() {
-		console.log('props2', this.props.auth);
 		switch (this.props.auth) {
 			case null:
 				return <div />;
@@ -18,20 +18,7 @@ class Login extends Component {
 					<div className="page-login">
 						<h1>Login</h1>
 						<div className="login-wrapper">
-							<div className="login-form">
-								<form>
-									<label className="form-label">Email</label>
-									<input id="email" type="text" />
-									<label className="form-label">
-										Password
-									</label>
-									<input
-										id="password"
-										type="password"
-										className="validate form-input"
-									/>
-								</form>
-							</div>
+							<LoginForm />
 							<div className="social-logins">
 								<a
 									href="/auth/google"
@@ -52,7 +39,6 @@ class Login extends Component {
 		}
 	}
 	render() {
-		console.log('props3', this.props.auth);
 		return (
 			<div>
 				{this.renderContent()}
