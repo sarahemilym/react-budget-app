@@ -1,7 +1,9 @@
 const passport = require('passport');
-const Authentication = require('../controllers/authentication');
 
 module.exports = app => {
+	// const requireAuth = passport.authenticate('jwt', { session: false });
+	// const requireSignin = passport.authenticate('local', { session: false });
+
 	app.get(
 		'/auth/google',
 		passport.authenticate('google', {
@@ -22,19 +24,29 @@ module.exports = app => {
 	app.get(
 		'/auth/facebook/callback',
 		passport.authenticate('facebook', {
-			successRedirect: '/dashboard',
-			failureRedirect: '/login'
+			successRedirect: '/dahsboard'
 		})
 	);
 
 	app.post(
-		'/login',
-		passport.authenticate('local', (req, res) => {
-			console.log('RESPONSE', res);
-		})
+		'/auth/login',
+		passport.authenticate('local-login', { failureRedirect: '/FAIL' }),
+		function(req, res) {
+			res.send(req.user);
+		}
 	);
 
-	app.post('/signup', Authentication.signup);
+	app.post('/auth/signup', passport.authenticate('local-signup'), function(
+		err,
+		req,
+		res,
+		existingUser
+	) {
+		if (existingUser) {
+			console.log('USER ALREADY EXISTS');
+		}
+		res.send(req.user);
+	});
 
 	app.get('/api/logout', (req, res) => {
 		req.logout();
@@ -42,6 +54,11 @@ module.exports = app => {
 	});
 
 	app.get('/api/current_user', (req, res) => {
+		console.log('CURRENT USER RES', req.user);
 		res.send(req.user);
+	});
+
+	app.get('/', (req, res) => {
+		res.send({ hi: 'there' });
 	});
 };

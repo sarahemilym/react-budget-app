@@ -4,15 +4,19 @@ import { connect } from 'react-redux';
 
 class Header extends Component {
 	renderContent() {
+		console.log('authorised?', this.props);
 		switch (this.props.auth) {
 			case null:
 				return;
 			case false:
-				return (
-					<li>
+				return [
+					<li key={1}>
 						<Link to="/login">Login</Link>
+					</li>,
+					<li key={2}>
+						<Link to="/signup">Signup</Link>
 					</li>
-				);
+				];
 			default:
 				return (
 					<div>

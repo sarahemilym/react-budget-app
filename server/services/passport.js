@@ -2,6 +2,8 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const LocalStrategy = require('passport-local').Strategy;
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
 const mongoose = require('mongoose');
 const keys = require('../config/keys');
 
@@ -47,10 +49,15 @@ passport.use(
 			clientSecret: keys.facebookClientSecret,
 			callbackURL: '/auth/facebook/callback',
 			proxy: true
+			// passReqToCallback: true
 		},
 		async (accessToken, refreshToken, profile, cb) => {
+			console.log('profile', profile);
 			const existingUser = await User.findOne({ facebookId: profile.id });
+			console.log('HERE AFTER ID');
 			if (existingUser) {
+				existingUser.token = tokenForUser.tokenForUser(existingUser);
+				console.log('FIRST TOKENNN', existingUser.token);
 				return cb(null, existingUser);
 			}
 
@@ -65,30 +72,74 @@ passport.use(
 
 //  Passport strategy for email/password
 
-const localLogin = new LocalStrategy({ usernameField: 'email' }, function(
-	email,
-	password,
-	done
-) {
-	User.findOne({ email: email }, function(err, user) {
-		if (err) {
-			return done(err);
-		}
-		if (!user) {
-			return done(null, false);
-		}
-		user.comparePassword(password, function(err, isMatch) {
+const localLogin = new LocalStrategy(
+	{ usernameField: 'email', proxy: true },
+	function(email, password, done) {
+		User.findOne({ email: email }, function(err, user) {
 			if (err) {
 				return done(err);
 			}
-			if (!isMatch) {
-				console.log('THEY DO NOT MATCH');
+			if (!user) {
 				return done(null, false);
 			}
-			console.log('THEY MATCH');
-			return done(null, user);
-		});
-	});
-});
 
-passport.use(localLogin);
+			user.comparePassword(password, function(err, isMatch) {
+				console.log('HERE CHECKING PASSWORD', user);
+				if (err) {
+					console.log('ERROR IN PASSWORD');
+					return done(err);
+				}
+				if (!isMatch) {
+					console.log('NO PASSWORD');
+					return done(null, false, { message: 'Incorrect password' });
+				}
+				console.log('HERE FINISHED', user);
+				return done(null, user);
+			});
+		});
+	}
+);
+
+const localSignup = new LocalStrategy(
+	{ usernameField: 'email', proxy: true, passReqToCallback: true },
+	function(req, email, password, done) {
+		User.findOne({ email: email }, function(err, user) {
+			if (user) {
+				console.log(user);
+				return done(null, false, { message: 'User already exists' });
+			}
+			if (!user) {
+				const user = new User({
+					name: req.body.name,
+					email: email,
+					password: password
+				});
+
+				user.save(function(err) {
+					if (err) {
+						return next(err);
+					}
+
+					user.comparePassword(password, function(err, isMatch) {
+						console.log('HERE CHECKING PASSWORD', user);
+						if (err) {
+							console.log('ERROR IN PASSWORD');
+							return done(err);
+						}
+						if (!isMatch) {
+							console.log('NO PASSWORD');
+							return done(null, false, {
+								message: 'Incorrect password'
+							});
+						}
+						console.log('HERE FINISHED', user);
+						return done(null, user);
+					});
+				});
+			}
+		});
+	}
+);
+
+passport.use('local-login', localLogin);
+passport.use('local-signup', localSignup);

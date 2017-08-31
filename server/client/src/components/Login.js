@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import LoginForm from './LoginForm';
+import { test } from '../actions';
+import { bindActionCreators } from 'redux';
+import { Link } from 'react-router-dom';
 
 class Login extends Component {
 	componentWillUpdate(nextProps) {
@@ -8,12 +11,14 @@ class Login extends Component {
 			this.props.history.push('/dashboard');
 		}
 	}
-
 	renderContent() {
+		console.log('this.props', this.props);
 		switch (this.props.auth) {
-			case null:
+			case true:
 				return <div />;
-			case false:
+			case null:
+				return;
+			default:
 				return (
 					<div className="page-login">
 						<h1>Login</h1>
@@ -30,25 +35,32 @@ class Login extends Component {
 								<a href="/auth/facebook" className="facebook">
 									Sign in with Facebook
 								</a>
+								{/* <button onClick={this.props.test} /> */}
 							</div>
 						</div>
 					</div>
 				);
-			default:
-				return;
 		}
 	}
 	render() {
 		return (
 			<div>
 				{this.renderContent()}
+				<p>
+					Not already registered? <Link to="/signup">Sign up</Link>{' '}
+					here.
+				</p>
 			</div>
 		);
 	}
 }
 
+const mapDispatchToProps = dispatch => {
+	return bindActionCreators({ test }, dispatch);
+};
+
 function mapStateToProps({ auth }) {
 	return { auth };
 }
 
-export default connect(mapStateToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
